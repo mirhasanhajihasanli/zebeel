@@ -1,25 +1,47 @@
 from flask import Flask, render_template, jsonify
-import pandas as pd
+import csv
 
 app = Flask(__name__)
 
-# Veri dosyasının yolu
-CSV_FILE = "data/lora_data.csv"
+# CSV dosya yolları
+BINS_FILE = 'data/bins.csv'
+TRUCKS_FILE = 'data/trucks.csv'
 
-# Ana Sayfa (Admin Ekranı)
-@app.route("/")
+# CSV dosyasını okuma fonksiyonu
+def read_csv(file_path):
+    data = []
+    with open(file_path, newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            data.append(row)
+    return data
+
+@app.route('/')
 def index():
-    return render_template("admin.html")
+    return render_template('index.html')
 
-# Çöp Kutuları Verilerini JSON Olarak Gönder
-@app.route("/get_bins")
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
+
+@app.route('/manager')
+def manager():
+    return render_template('manager.html')
+
+@app.route('/collector')
+def collector():
+    return render_template('collector.html')
+
+# API uçları
+@app.route('/api/bins')
 def get_bins():
-    try:
-        df = pd.read_csv(CSV_FILE)
-        bins = df.to_dict(orient="records")  # CSV'yi sözlük listesine çevir
-        return jsonify(bins)
-    except Exception as e:
-        return jsonify({"error": str(e)})
+    bins = read_csv(BINS_FILE)
+    return jsonify(bins)
+
+@app.route('/api/trucks')
+def get_trucks():
+    trucks = read_csv(TRUCKS_FILE)
+    return jsonify(trucks)
 
 if __name__ == "__main__":
     app.run(debug=True)

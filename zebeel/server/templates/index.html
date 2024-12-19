@@ -3,110 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Çöp Kutusu Konumları</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-        h1 {
-            margin: 20px 0;
-        }
-        #map {
-            height: 600px;
-            width: 80%;
-            margin: 0 auto;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-        }
-        table {
-            width: 80%;
-            margin: 20px auto;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-    </style>
+    <title>Akıllı Çöp Yönetim Sistemi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>Çöp Kutusu Konumları ve Doluluk Durumu</h1>
-
-    <!-- Harita Bölümü -->
-    <div id="map"></div>
-
-    <!-- Tablo Bölümü -->
-    <h2>Veri Tablosu</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Mesafe (cm)</th>
-                <th>Enlem (Lat)</th>
-                <th>Boylam (Lon)</th>
-                <th>Durum (Status)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in data %}
-            <tr>
-                <td>{{ item.Distance }}</td>
-                <td>{{ item.Lat }}</td>
-                <td>{{ item.Lon }}</td>
-                <td>
-                    {% if item.Status == 'F' %}
-                        <span style="color: red;">Dolu</span>
-                    {% elif item.Status == 'M' %}
-                        <span style="color: orange;">Orta</span>
-                    {% else %}
-                        <span style="color: green;">Boş</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <!-- Leaflet.js Harita Scripti -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        var map = L.map('map').setView([41.02, 29.13], 12);
-
-        // OpenStreetMap tile layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap Contributors'
-        }).addTo(map);
-
-        // Dinamik verilerle marker ekleme
-        var data = {{ data|tojson }};
-        data.forEach(function(item) {
-            var color;
-            if (item.Status === "F") color = "red";        // Full (Dolu)
-            else if (item.Status === "M") color = "orange"; // Medium (Orta)
-            else color = "green";                         // Empty (Boş)
-
-            // Haritaya işaretçi ekle
-            L.circleMarker([item.Lat, item.Lon], {
-                color: color,
-                radius: 8,
-                fillOpacity: 0.7
-            })
-            .bindPopup(
-                `<b>Durum:</b> ${item.Status === 'F' ? 'Dolu' : item.Status === 'M' ? 'Orta' : 'Boş'}<br>
-                 <b>Mesafe:</b> ${item.Distance} cm<br>
-                 <b>Enlem:</b> ${item.Lat}<br>
-                 <b>Boylam:</b> ${item.Lon}`
-            )
-            .addTo(map);
-        });
-    </script>
+    <h1>Akıllı Çöp Yönetim Sistemi</h1>
+    <div class="buttons">
+        <a href="/admin" class="button">Admin Ekranı</a>
+        <a href="/manager" class="button">Manager Ekranı</a>
+        <a href="/collector" class="button">Çöp Toplayıcı Ekranı</a>
+    </div>
 </body>
 </html>
